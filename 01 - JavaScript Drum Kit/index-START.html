@@ -67,17 +67,18 @@
     if (!audio) return; // stop the function from runing if key does not exist
     audio.currentTime = 0; // rewind to the start
     audio.play(); // play the audio
-    key.classList.add('playing');
+    key.classList.add('playing'); // add the css class when key is pressed
   }
 
   function removeTransition(e){
     if (e.propertyName !== 'transform') return; // skip if it's not transform
-    this.classList.remove('playing');
+    this.classList.remove('playing'); // remove class after end of transformation
   }
 
-  const keys = document.querySelectorAll('.key');
-  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
-  window.addEventListener('keydown', playSound);
+  const keys = document.querySelectorAll('.key'); // find the keys and set them into a node array
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition)); // iterate and when 'transitionend' event
+  // is triggered it will activate removeTransition function
+  window.addEventListener('keydown', playSound); // play the sound when key is pressed
 </script>
 
 
