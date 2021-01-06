@@ -7,6 +7,91 @@
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
+  // CANVAS !!!!!
+  // first we wanna grab our canvas
+  const canvas = document.querySelector('#draw');
+  //  you don't draw directly on html but on something called a context
+  const ctx = canvas.getContext('2d');
+  //  we set the size of the canvas and will be the size of the window
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // brush settings
+  // then we can set the brush size and color
+  ctx.strokeStyle = "#BADA55";
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 100;
+  // this one is used to meke a blend mode like photoshop
+  ctx.globalCompositeOperation = 'multiply';
+  // test with shadows / need to check the doc
+  // ctx.shadowColor = 'red';
+  // ctx.shadowOffsetX = 50;
+  // ctx.shadowOffsetY = 50;
+  // ctx.shadowBlur = 30;
+
+
+  // this variable help to know if mouse is moving without drawing
+  let isDrawing = false;
+  // those variable help us to know where the start and the end of X and Y
+  let lastX = 0;
+  let lastY = 0;
+  // we set a hue variable for the color but after all is done
+  let hue = 0;
+  // we set a direction for the size of the brush that will evolve in the direction of the hue
+  let direction = true;
+
+  // DRAWING function !!!
+
+  function draw(event) {
+    if(!isDrawing) return; // stop the function from running when not drawing
+    console.log(event);
+    // second part after eventListeners ok
+    // as we draw before we begin the path we can implement the hue variable
+    // 100% is for saturation and 50% is for ligthness
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+    ctx.beginPath();
+    // start form
+    ctx.moveTo(lastX, lastY);
+    // go to
+    ctx.lineTo(event.offsetX, event.offsetY)
+    ctx.stroke();
+    lastX = event.offsetX;
+    lastY = event.offsetY;
+    // this line is designed to increment the hue and change the color
+    hue ++;
+    if (hue >= 360) {
+    hue = 0;
+    }
+    // flip direction if > 100 or < 1 ps u can play with the values
+    if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+    direction = !direction;
+  }
+  // this make the brush size bigger depending the direction
+  if(direction) {
+    ctx.lineWidth++;
+  } else {
+    ctx.lineWidth--;
+  }
+  }
+
+  //EVENT LISTENERS !!!!
+
+  // then we want to change the behavior of isDrawing with eventListener on the mouse
+canvas.addEventListener('mousemove', draw);
+
+// We will have to fix this line with lastX and lastY configured so we will make a block
+canvas.addEventListener('mousedown',(event) => {
+  isDrawing =true
+  lastX = event.offsetX;
+  lastY = event.offsetY;
+});
+// if other behavior of the mouse occur we must stop drawing
+// after this we have to go back to draw function and handle the drawing part
+canvas.addEventListener('mouseup',() => isDrawing =false);
+canvas.addEventListener('mouseout',() => isDrawing =false);
+
+
 </script>
 
 <style>
