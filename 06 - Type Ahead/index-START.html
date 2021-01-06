@@ -16,7 +16,68 @@
   </form>
 <script>
 const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+//  we start with an empty array to store the cities of the JSON
+const cities = [];
+// Then we are going to fetch the date but the fetch return a promise
+//  we must turn it into data that we can push into our array
+// the data that come from fetch is not known by fetch, we know it's json. so we use json method on blob (data pre treated)
+fetch(endpoint)
+    .then(blob => blob.json())
+    .then(data => cities.push(...data));
+//  we use spread on the push method with ... to push the data correctly
 
+function findMatches(wordToMatch, cities) {
+  return cities.filter(place => {
+    // filter will chisel down the data to a place that will be the city
+    // after we need to figure out is city matches with search
+    const regex = new RegExp(wordToMatch, 'gi')
+    // so we intiate a regex const with wordToMatch and g means global and i
+    // means incensitive with the case
+    return place.city.match(regex) || place.state.match(regex)
+    // then we are able to match city and state with OR
+
+  });
+}
+
+// this function allow to put commas to the number just add it to the population result
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+// then we have to make a function to display the match
+function displayMatches() {
+  const matchArray = findMatches(this.value, cities);
+  // the first part of the function allow to capture what is typed
+  // and make a match with the json
+  console.log(matchArray);
+  // then we try to display by adding html async
+  // so we have to loop over the results to display them in a list
+  const html = matchArray.map(place => {
+    // before returning the result we can highlight the input with a regexp
+    // so that the letters typed appears on the result with a class hl (highlight)
+    const regex = new RegExp(this.value, 'gi');
+    // then we want to find whatever match with input and replace with a class of hl
+    const cityName = place.city.replace(regex, `<span class="hl">${this.value}</span>`);
+    const stateName = place.state.replace(regex, `<span class="hl">${this.value}</span>`);
+    return `
+    <li>
+        <span class="name">${cityName}, ${place.state}</span>
+        <span class="population">${numberWithCommas(place.population)}</span>
+      </li>
+    `;
+    // as the result of .map is an array we join so it makes a long string
+  }).join('');
+  // finally we can add our htm result in suggestions
+  suggestions.innerHTML = html;
+}
+
+// THIS PART IS CONNECTED to findMatches
+// whe have a query selector on the form (in search and suggestions)
+const searchInput = document.querySelector('.search');
+const suggestions = document.querySelector('.suggestions');
+//  and an eventlistener for change of search and keyup so it follow all you write in the form
+searchInput.addEventListener('change', displayMatches);
+searchInput.addEventListener('keyup', displayMatches);
 </script>
 </body>
 </html>
