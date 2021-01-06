@@ -85,6 +85,7 @@
     // 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
     // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
     // you can only check in wikipedia in the inspector
+
     // const category = document.querySelector('.mw-category');
     // querySelector to the links inside the category variable
     // const links = [...category.querySelectorAll('a')];
@@ -97,11 +98,28 @@
 
     // 7. sort Exercise
     // Sort the people alphabetically by last name
+    const alpha = people.sort(function(lastOne, nextOne){
+      const parts = lastOne.split(', '); // take last one turn it into an array and split it at the ','
+      console.log(lastOne);
+    })
 
 
     // 8. Reduce Exercise
     // Sum up the instances of each of these
     const data = ['car', 'car', 'truck', 'truck', 'bike', 'walk', 'car', 'van', 'bike', 'walk', 'car', 'van', 'car', 'truck' ];
+
+    const transportation = data.reduce(function(obj, item) { // item = car, truck .... + second {} is we need to start with a blank object to store the items
+      console.log(item);
+      // We need to specify if there is no object recorded we must start with a 0
+      if(!obj[item]) {
+        obj[item] = 0;
+      }
+      // We can start incrementing
+      obj[item]++;
+      // and return the result obj c'est l'item + le nbre de fois qu'il est stocké dans data
+      return obj;
+    }, {})
+
 
   </script>
 </body>
